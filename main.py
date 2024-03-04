@@ -166,8 +166,18 @@ async def movie(ctx, *, arg):
         await ctx.send_followup('No movies found with that title')
 
     
+@bot.slash_command(name="purge",pass_context=True)
+@commands.has_permissions(administrator=True)
+async def clean(ctx, limit: int):
+        await ctx.channel.purge(limit=limit)
+        await ctx.respond('Cleared by {}'.format(ctx.author.mention))
+        await ctx.message.delete()
 
+@clean.error
+async def clear_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You cant do that!")
         
 
 
-bot.run(token)
+bot.run('NzI0NTY3MTQ4MDMwMTk3Nzgx.GHFQOe.YKoZ9Xq0AmrAlxx93hw2gvtP69au3NEB5n9DnU')
