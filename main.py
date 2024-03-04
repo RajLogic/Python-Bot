@@ -180,4 +180,4 @@ async def clear_error(ctx, error):
         
 
 
-bot.run('NzI0NTY3MTQ4MDMwMTk3Nzgx.GHFQOe.YKoZ9Xq0AmrAlxx93hw2gvtP69au3NEB5n9DnU')
+bot.run(token)
