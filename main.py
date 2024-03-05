@@ -111,10 +111,9 @@ async def setgame(ctx, *, activity1):
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening,name=activity1))
 
 
-
+#works but needs edits
 @bot.slash_command(name='movie')
 async def movie(ctx, *, arg):
-
     await ctx.defer()
     search = arg
     results = im.search_movie(search)
@@ -124,11 +123,11 @@ async def movie(ctx, *, arg):
         title = results[0]
         movies = title.getID()
         ID = im.get_movie(movies)
-        cast = ID['cast']
-        genres = ID['genres']
-        countries =ID['countries']
-        director = ID['director']
-        languages =ID['languages']
+        cast = [d['name'] for d in ID['cast']]
+        genres = [d for d in ID['genres']]
+        countries =[d for d in ID['countries']]
+        director = [d['name'] for d in ID['directors']]
+        languages =[d for d in ID['languages']] 
         rating =ID['rating']
         plot = ID['plot outline']
         title = ID['title']
@@ -164,8 +163,9 @@ async def movie(ctx, *, arg):
         embed.add_field(name="Country", value=countries)
         embed.add_field(name="Languages", value=languages)
         embed.add_field(name="Directors", value=director)
-        for i in range(5):
-            embed.add_field(name="Actors"[i], value=cast[i])
+        embed.add_field(name="Actors", value=f"{cast[1],cast[2],cast[3],cast[4],cast[5]}")
+        #for i in range(5):
+              # embed.add_field(name="Actors"[i], value=cast[i])
         embed.add_field(name="Plot",value=plot)
         embed.set_author(name=bot.user.name,icon_url=bot.user.avatar.url)
         embed.set_footer(text= "Created By SargentRaju") #icon= "https://cdn.discordapp.com/avatars/354879221044084737/e5c6c1d9899ab42d26848de4dce4bb77.webp")
@@ -179,8 +179,9 @@ async def movie(ctx, *, arg):
 @bot.slash_command(name="purge",pass_context=True)
 @commands.has_permissions(administrator=True)
 async def clean(ctx, limit: int):
+        await ctx.defer()
         await ctx.channel.purge(limit=limit)
-        await ctx.respond('Cleared by {}'.format(ctx.author.mention))
+        await ctx.send_followup('Cleared by {}'.format(ctx.author.mention))
         await ctx.message.delete()
 
 @clean.error
@@ -189,7 +190,12 @@ async def clear_error(ctx, error):
         await ctx.send("You cant do that!")
         
 
-
+@bot.slash_command(name="clear", pass_context=True)
+@commands.has_permissions(administrator=True)
+async def clear(ctx, amount: int):
+    await ctx.defer()
+    await ctx.channel.purge(limit=amount+1)
+    await ctx.send_followup(f"Cleared {amount} messages.")
 
 
 
