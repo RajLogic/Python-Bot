@@ -198,6 +198,47 @@ async def clear(ctx, amount: int):
     await ctx.send_followup(f"Cleared {amount} messages.")
 
 
+@bot.slash_command(description = "help")
+async def help(ctx):
+    help_text = """
+     General Commands: `all in slash`
+    - `help`: Shows this help message
+    - `ping`: Shows the bot's latency
+    - `serverinvite` : Sends an invite link to our Server
+    - `movie <movie name>` : Shows information about a movie
+    - `gtn`: Plays a Guess-the-Number game
+    - `hello`: Says hello
+    - `botinvite`: Sends a link to invite the bot to your server
+    - `serverinfo`: Shows information about the server
+
+    
+    Moderation Commands (Requires Manage Server Permission):
+    Admin Commands: `all in slash`
+    - `clear <number>`: Clears a number of messages from the channel
+    - `purge <number>`: Purges a number of messages from the channel
+    - `purge` : clears chat
+    - `setactivity <activity>`: Sets the bot's activity (Owner Only)
+    
+    """
+    pages = [help_text[i:i+1000] for i in range(0, len(help_text), 1000)]
+    for i, page in enumerate(pages):
+        embed = discord.Embed(title="Help", color=0x00ff00)
+        embed.add_field(name="General Commands" if i == 0 else " ", value=page, inline=False)
+        if i == 0:
+            embed.add_field(name="Admin Commands", value="", inline=False)
+        await ctx.respond(embed=embed)
+
+@bot.slash_command()
+async def gtn(ctx):
+    """A Slash Command to play a Guess-the-Number game."""
+
+    await ctx.respond('Guess a number between 1 and 10.')
+    guess = await bot.wait_for('message', check=lambda message: message.author == ctx.author)
+
+    if int(guess.content) == 5:
+        await ctx.send('You guessed it!')
+    else:
+        await ctx.send('Nope, try again.')
 
 
 bot.run(token)
