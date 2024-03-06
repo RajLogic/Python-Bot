@@ -12,6 +12,7 @@ This is a simple script that uses IMDbPY to get the
 This script is used to fetch movie data from IMDb and send it as a message in Discord
 
 '''
+import random
 import discord
 from imdb import Cinemagoer
 import time
@@ -343,6 +344,34 @@ async def ban(ctx, user: discord.Member, reason: str):
 async def ban_error(ctx, error):
     if isinstance(error, commands.MissingPermissions):
         await ctx.send("You cant do that!")
+
+@bot.slash_command(name="unban")
+@commands.has_permissions(administrator=True)
+async def unban(ctx, user: discord.User, reason: str):
+    bans['users'] = [entry for entry in bans['users'] if entry['user_id'] != user.id]
+    with open('bans.json', 'w', encoding='utf-8') as f:
+        json.dump(bans, f, ensure_ascii=False, indent=4)
+    await ctx.guild.unban(user, reason=reason)
+    await ctx.respond(f"{user.mention} has been unbanned.")
+
+@unban.error
+async def unban_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You cant do that!")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
