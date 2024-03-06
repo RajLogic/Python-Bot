@@ -42,6 +42,20 @@ with open('reports.json', encoding='utf-8') as f:
     report = {}
     report['users'] = []
 
+with open('kicks.json', encoding='utf-8') as f:
+  try:
+    kicks = json.load(f)
+  except ValueError:
+    kicks = {}
+    kicks['users'] = []
+
+with open('bans.json', encoding='utf-8') as f:
+  try:
+    bans = json.load(f)
+  except ValueError:
+    bans = {}
+    bans['users'] = []
+
 
 
 @bot.event
@@ -218,6 +232,12 @@ async def help(ctx):
     - `purge <number>`: Purges a number of messages from the channel
     - `purge` : clears chat
     - `setactivity <activity>`: Sets the bot's activity (Owner Only)
+    - `warn <user> <reason>`: Warns a user
+    - `warnings <user>`: Shows the number of warnings a user has
+    - `clearwarnings <user>`: Clears all warnings for a user
+    - `kick <user> <reason>`: Kicks a user
+    - `ban <user> <reason>`: Bans a user
+
     
     """
     pages = [help_text[i:i+1000] for i in range(0, len(help_text), 1000)]
@@ -239,6 +259,91 @@ async def gtn(ctx):
         await ctx.send('You guessed it!')
     else:
         await ctx.send('Nope, try again.')
+
+
+@bot.slash_command(name="warn")
+@commands.has_permissions(administrator=True)
+async def warn(ctx, user: discord.User, reason: str):
+    report['users'].append({
+        'username': user.name,
+        'user_id': user.id,
+        'reason': reason
+    })
+    with open('reports.json', 'w', encoding='utf-8') as f:
+        json.dump(report, f, ensure_ascii=False, indent=4)
+    await ctx.respond(f"{user.mention} has been warned for {reason}.")
+    await user.send(f"You have been warned for {reason}.")
+
+@warn.error
+async def warn_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.respond("You cant do that!")
+
+@bot.slash_command(name="warnings")
+@commands.has_permissions(administrator=True)
+async def warnings(ctx, user: discord.User):
+    user_warnings = [entry for entry in report['users'] if entry['user_id'] == user.id]
+    num_warnings = len(user_warnings)
+    await ctx.respond(f"{user.mention} has {num_warnings} warnings.")
+
+@warnings.error
+async def warnings_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You cant do that!")
+
+@bot.slash_command(name="clearwarnings")
+@commands.has_permissions(administrator=True)
+async def clear_warnings(ctx, user: discord.User):
+    report['users'] = [entry for entry in report['users'] if entry['user_id'] != user.id]
+    with open('reports.json', 'w', encoding='utf-8') as f:
+        json.dump(report, f, ensure_ascii=False, indent=4)
+    await ctx.respond(f"Warnings cleared for {user.mention}.")
+    await user.send("Your warnings have been cleared.")
+
+@clear_warnings.error
+async def clear_warnings_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You cant do that!")
+
+@bot.slash_command(name="kick")
+@commands.has_permissions(administrator=True)
+async def kick(ctx, user: discord.Member, reason: str):
+    kicks['users'].append({
+        'username': user.name,
+        'user_id': user.id,
+        'reason': reason
+    })
+    with open('kicks.json', 'w', encoding='utf-8') as f:
+        json.dump(kicks, f,ensure_ascii=False, indent=4)
+    await user.send(f"You have been kicked for {reason}.")
+    await user.kick(reason=reason)
+    await ctx.respond(f"{user.mention} has been kicked for {reason}.")
+
+@kick.error
+async def kick_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You cant do that!")
+
+
+@bot.slash_command(name="ban")
+@commands.has_permissions(administrator=True)
+async def ban(ctx, user: discord.Member, reason: str):
+    bans['users'].append({
+        'username': user.name,
+        'user_id': user.id,
+        'reason': reason
+    })
+    with open('bans.json', 'w', encoding='utf-8') as f:
+        json.dump(bans, f, ensure_ascii=False, indent=4)
+    await user.send(f"You have been banned for {reason}.")
+    await user.ban(reason=reason)
+    await ctx.respond(f"{user.mention} has been banned for {reason}.")
+
+@ban.error
+async def ban_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You cant do that!")
+
 
 
 bot.run(token)
