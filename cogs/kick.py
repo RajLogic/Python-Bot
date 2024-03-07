@@ -11,7 +11,7 @@ from discord.ext.commands import  MissingPermissions,has_permissions
 import json
 
 
-with open('Bot-Python/data/kicks.json', encoding='utf-8') as f:
+with open('data/kicks.json', encoding='utf-8') as f:
   try:
     kicks = json.load(f)
   except ValueError:
@@ -38,7 +38,7 @@ class kick(commands.Cog):
             'reason': reason
         })
         
-        with open('Bot-Python/data/kicks.json', 'w', encoding='utf-8') as f:
+        with open('data/kicks.json', 'w', encoding='utf-8') as f:
             json.dump(kicks, f, ensure_ascii=False, indent=4)
         await user.send(f"You have been kicked for {reason}.")
         await user.kick(reason=reason)

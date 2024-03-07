@@ -11,7 +11,7 @@ from discord.ext.commands import  MissingPermissions,has_permissions
 import json
 
 
-with open('Bot-Python/data/reports.json', encoding='utf-8') as f:
+with open('data/reports.json', encoding='utf-8') as f:
   try:
     report = json.load(f)
   except ValueError:
@@ -32,7 +32,7 @@ class clearwarnings(commands.Cog):
         user: discord.User
         ):
             report['users'] = [entry for entry in report['users'] if entry['user_id'] != user.id]
-            with open('Bot-Python/data/reports.json', 'w', encoding='utf-8') as f:
+            with open('data/reports.json', 'w', encoding='utf-8') as f:
                 json.dump(report, f, ensure_ascii=False, indent=4)
             await ctx.respond(f"Warnings cleared for {user.mention}.")
             await user.send("Your warnings have been cleared.")

@@ -10,7 +10,7 @@ from discord.ext.commands import Bot
 from discord.ext.commands import  MissingPermissions,has_permissions
 import json
 
-with open('Bot-Python/data/bans.json', encoding='utf-8') as f:
+with open('data/bans.json', encoding='utf-8') as f:
   try:
     bans = json.load(f)
   except ValueError:
@@ -36,7 +36,7 @@ class ban(commands.Cog):
             'user_id': user.id,
             'reason': reason
         })
-        with open('Bot-Python/data/bans.json', 'w', encoding='utf-8') as f:
+        with open('data/bans.json', 'w', encoding='utf-8') as f:
             json.dump(bans, f, ensure_ascii=False, indent=4)
         await user.send(f"You have been banned for {reason}.")
         await user.ban(reason=reason)

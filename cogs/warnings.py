@@ -10,7 +10,7 @@ from discord.ext.commands import Bot
 from discord.ext.commands import  MissingPermissions,has_permissions
 import json
 
-with open('Bot-Python/data/reports.json', encoding='utf-8') as f:
+with open('data/reports.json', encoding='utf-8') as f:
   try:
     report = json.load(f)
   except ValueError:

@@ -9,7 +9,7 @@ from discord.ext.commands import  MissingPermissions,has_permissions
 import json
 
 
-load_dotenv('Bot-Python/data/.env')
+load_dotenv('data/.env')
 token = os.getenv('DISCORD_TOKEN')
 prefix = os.getenv('DISCORD_PREFIX')
 link = os.getenv('DISCORD_LINK')
@@ -59,4 +59,5 @@ extensions = [# load cogs
 if __name__ == '__main__': # import cogs from cogs folder
     for extension in extensions:
         bot.load_extension(extension)
+        
 bot.run(token)

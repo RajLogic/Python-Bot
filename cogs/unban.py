@@ -10,7 +10,7 @@ from discord.ext.commands import Bot
 from discord.ext.commands import  MissingPermissions,has_permissions
 import json
 
-with open('Bot-Python/data/bans.json', encoding='utf-8') as f:
+with open('data/bans.json', encoding='utf-8') as f:
   try:
     bans = json.load(f)
   except ValueError:
@@ -29,7 +29,7 @@ class unban(commands.Cog):
         user: discord.User, reason: str
     ):
         bans['users'] = [entry for entry in bans['users'] if entry['user_id'] != user.id]
-        with open('Bot-Python/data/bans.json', 'w', encoding='utf-8') as f:
+        with open('data/bans.json', 'w', encoding='utf-8') as f:
             json.dump(bans, f, ensure_ascii=False, indent=4)
         await ctx.guild.unban(user, reason=reason)
         await ctx.respond(f"{user.mention} has been unbanned.")
