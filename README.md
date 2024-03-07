@@ -1,6 +1,6 @@
 # RajLogic Discord Bot
 
-This is a Discord bot built with Python.
+This is a Discord bot built with Python. :  
 
 ## Features
 
@@ -8,20 +8,19 @@ This is a Discord bot built with Python.
 
 
 ## Commands
-- ping
-- hello
-- botinvite
-- serverinvite
-- serverinfo
-- movie
-- help
-- gtn
-- warn
-- warnings
-- clearwarnings
-- kick
-- ban
-- unban
+- ping - shows bots latencey  and uptime
+- hello - Hello
+- botinvite - Invite the bot 
+- serverinvite - bot creates a bot invite link for your server
+- serverinfo - get info for server
+- movie - searches for info on movie   
+- help -  shows command
+- warn -  warns a user and saves it to json file
+- warnings - reads json file and responds with the number of warnings
+- clearwarnings - removes all warnings  from json file
+- kick - kicks  a member from the server
+- ban - bans a member from the server
+- unban - unbans a member from the server
 
 ## Installation
 
