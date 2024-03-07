@@ -1,5 +1,5 @@
-pip install imdbpy
-pip install discord.py
-pip install py-cord
-pip install python-dotenv
-pip install requests
+imdbpy
+discord.py
+py-cord
+python-dotenv
+requests
