@@ -4,9 +4,8 @@ This is a Discord bot built with Python.
 
 ## Features
 
-- Feature 1: Describe the first feature of your bot.
-- Feature 2: Describe the second feature of your bot.
-- Feature 3: Describe the third feature of your bot.
+- All commands are Slash
+
 
 ## Commands
 - ping
