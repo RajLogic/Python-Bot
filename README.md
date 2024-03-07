@@ -1,4 +1,4 @@
-# Python-Bot
+# RajLogic Discord Bot
 
 This is a Discord bot built with Python.
 
