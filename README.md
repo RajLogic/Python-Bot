@@ -8,6 +8,22 @@ This is a Discord bot built with Python.
 - Feature 2: Describe the second feature of your bot.
 - Feature 3: Describe the third feature of your bot.
 
+## Commands
+- ping
+- hello
+- botinvite
+- serverinvite
+- serverinfo
+- movie
+- help
+- gtn
+- warn
+- warnings
+- clearwarnings
+- kick
+- ban
+- unban
+
 ## Installation
 
 1. Clone the repository: 
