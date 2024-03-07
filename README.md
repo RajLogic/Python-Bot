@@ -26,7 +26,7 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
-2. Invite the bot to your Discord server using the following link: [Invite Bot](https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&scope=bot)
+2. Invite the bot to your Discord server using the following link: [Invite Bot](https://discord.com/developers/applications))
 
 ## Contributing
 
