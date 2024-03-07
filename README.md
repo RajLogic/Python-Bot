@@ -3,16 +3,34 @@
 This is a Discord bot built with Python.
 
 ## Features
+- Saves data to json files
+- clean and seperate files and commands
+- easy to read
+  
 
-- Feature 1: Describe the first feature of your bot.
-- Feature 2: Describe the second feature of your bot.
-- Feature 3: Describe the third feature of your bot.
+Commands:
+-ping
+-hello
+-botinvite
+-serverinvite
+-serverinfo
+-movie
+-help
+-gtn
+-warn
+-warnings
+-clearwarnings
+-kick
+-ban
+-unban
+
+
 
 ## Installation
 
-1. Clone the repository: `git clone https://github.com/your-username/your-repo.git`
+1. Clone the repository: `[git clone https://github.com/your-username/your-repo.git](https://github.com/RajLogic/Python-Bot.git)`
 2. Install the required dependencies: `pip install -r requirements.txt`
-3. Configure the bot token: Replace `YOUR_BOT_TOKEN` in `config.py` with your Discord bot token.
+3. Configure the bot token: Replace `YOUR_BOT_TOKEN` in `data/.env` with your Discord bot token.
 
 ## Usage
 
