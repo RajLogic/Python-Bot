@@ -145,7 +145,7 @@ dmypy.json
 data/reports.json
 data/kicks.json
 data/bans.json
-data/ser_data.json
+data/user_data.json
 
 # Pyre type checker
 .pyre/
