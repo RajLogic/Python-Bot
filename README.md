@@ -9,20 +9,20 @@ This is a Discord bot built with Python.
   
 
 Commands:
--ping
--hello
--botinvite
--serverinvite
--serverinfo
--movie
--help
--gtn
--warn
--warnings
--clearwarnings
--kick
--ban
--unban
+- ping
+- hello
+- botinvite
+- serverinvite
+- serverinfo
+- movie
+- help
+- gtn
+- warn
+- warnings
+- clearwarnings
+- kick
+- ban
+- unban
 
 
 
