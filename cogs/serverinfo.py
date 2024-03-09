@@ -29,7 +29,7 @@ class serverinfo(commands.Cog):
         embed.set_footer(text="Created By SargentRaju")    
         embed.set_author(name=f'{ctx.author.name}')
 
-        await ctx.send(embed=embed)
+        await ctx.respond(embed=embed)
 
 def setup(bot):
     bot.add_cog(serverinfo(bot))

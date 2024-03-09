@@ -26,6 +26,7 @@ class ban(commands.Cog):
     @slash_command(name="ban")
     @commands.has_permissions(administrator=True)
     async def ban(
+       self,
        ctx, 
        user:discord.Member, 
        reason: str):
