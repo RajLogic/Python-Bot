@@ -1,17 +1,20 @@
 import discord
-from discord.commands import slash_command
 from discord.ext import commands
+from discord import app_commands
 
-class hello(commands.Cog):
-
-    def __init__(self,bot):
+class Hello(commands.Cog):
+    def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name='hello',description='says hello')
-    async def hello(
-        self,
-        ctx: discord.ApplicationContext
-    ):
-        await ctx.respond("Hello")
-def setup(bot):
-    bot.add_cog(hello(bot))
+    @commands.command(name="hello", help="Says hello!")
+    async def hello(self, ctx):
+        """A simple command to say hello."""
+        await ctx.send("Hello! 👋")
+
+    @app_commands.command()
+    async def hello_slash(self, interaction: discord.Interaction):
+        """A simple command to say hello."""
+        await interaction.response.send_message("Hello! 👋")
+async def setup(bot):
+    """Asynchronous cog setup."""
+    await bot.add_cog(Hello(bot))

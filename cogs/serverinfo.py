@@ -1,35 +1,56 @@
-import random
 import discord
-from imdb import Cinemagoer
-import time
-import os
-from dotenv import load_dotenv
 from discord.ext import commands
-from discord.commands import slash_command
-from discord.ext.commands import Bot
-from discord.ext.commands import  MissingPermissions,has_permissions
-import json
+from discord import app_commands
 
-class serverinfo(commands.Cog):
+class ServerInfo(commands.Cog):
 
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
 
-    @slash_command()
-    async def serverinfo(
-        self,
-        ctx: discord.ApplicationContext
-    ):
-        embed = discord.Embed(title=f"{ctx.guild.name} Info", description="Information of this Server", color=discord.Colour.blue())
-        embed.add_field(name='🆔Server ID', value=f"{ctx.guild.id}", inline=True)
-        embed.add_field(name='📆Created On', value=ctx.guild.created_at.strftime("%b %d %Y"), inline=True)
-        embed.add_field(name='👑Owner', value=f"{ctx.guild.owner.mention}", inline=True)
-        embed.add_field(name='👥Members', value=f'{ctx.guild.member_count} Members', inline=True)
-        embed.add_field(name='💬Channels', value=f'{len(ctx.guild.text_channels)} Text | {len(ctx.guild.voice_channels)} Voice', inline=True) 
-        embed.set_footer(text="Created By SargentRaju")    
+    @commands.command(name="serverinfo", description="Displays information about the server")
+    async def serverinfo(self, ctx: commands.Context):
+        guild = ctx.guild
+        embed = discord.Embed(
+            title=f"{guild.name} Info",
+            description="Information about this server",
+            color=discord.Colour.blue()
+        )
+        embed.add_field(name='🆔 Server ID', value=f"{guild.id}", inline=True)
+        embed.add_field(name='📆 Created On', value=guild.created_at.strftime("%b %d %Y"), inline=True)
+        embed.add_field(name='👑 Owner', value=f"{guild.owner.mention}", inline=True)
+        embed.add_field(name='👥 Members', value=f'{guild.member_count} Members', inline=True)
+        embed.add_field(name='💬 Channels', value=f'{len(guild.text_channels)} Text | {len(guild.voice_channels)} Voice', inline=True)
+        embed.set_footer(text="Created By SargentRaju")
         embed.set_author(name=f'{ctx.author.name}')
 
-        await ctx.respond(embed=embed)
+        await ctx.send(embed=embed)
 
-def setup(bot):
-    bot.add_cog(serverinfo(bot))
+    @serverinfo.error
+    async def serverinfo_error(self, ctx, error):
+        if isinstance(error, commands.CommandInvokeError):
+            await ctx.send("An error occurred while trying to get server information.")
+        else:
+            await ctx.send("An unexpected error occurred.")
+            raise error  # Re-raise the error for logging
+        
+    @app_commands.command(name="serverinfo", description="Displays information about the server")
+    async def serverinfo_slash(self, interaction: discord.Interaction):
+        guild = interaction.guild
+        embed = discord.Embed(
+            title=f"{guild.name} Info",
+            description="Information about this server",
+            color=discord.Colour.blue()
+        )
+        embed.add_field(name='🆔 Server ID', value=f"{guild.id}", inline=True)
+        embed.add_field(name='📆 Created On', value=guild.created_at.strftime("%b %d %Y"), inline=True)
+        embed.add_field(name='👑 Owner', value=f"{guild.owner.mention}", inline=True)
+        embed.add_field(name='👥 Members', value=f'{guild.member_count} Members', inline=True)
+        embed.add_field(name='💬 Channels', value=f'{len(guild.text_channels)} Text | {len(guild.voice_channels)} Voice', inline=True)
+        embed.set_footer(text="Created By SargentRaju")
+        embed.set_author(name=f'{interaction.user.name}')
+
+        await interaction.response.send_message(embed=embed)
+
+
+async def setup(bot):
+    await bot.add_cog(ServerInfo(bot))

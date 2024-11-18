@@ -1,52 +1,47 @@
-
 import discord
-from imdb import Cinemagoer
-import time
-import os
-from dotenv import load_dotenv
 from discord.ext import commands
-from discord.commands import slash_command
-from discord.ext.commands import Bot
-from discord.ext.commands import  MissingPermissions,has_permissions
+from discord import app_commands
 import json
+import os
 
-with open('data/reports.json', encoding='utf-8') as f:
-  try:
-    report = json.load(f)
-  except ValueError:
-    report = {}
-    report['users'] = []
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
 
+# Load report data
+report_file_path = 'data/reports.json'
+if not os.path.exists(report_file_path):
+    os.makedirs(os.path.dirname(report_file_path), exist_ok=True)
+    with open(report_file_path, 'w', encoding='utf-8') as f:
+        json.dump({'users': []}, f)
 
+with open(report_file_path, 'r', encoding='utf-8') as f:
+    try:
+        report = json.load(f)
+    except ValueError:
+        report = {'users': []}
 
-class warn(commands.Cog):
-
-    def __init__(self,bot):
+class Warn(commands.Cog):
+    def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="warn")
+    @app_commands.command(name="warn")
     @commands.has_permissions(administrator=True)
-    async def warn(
-        self,
-        ctx,
-        user: discord.User,
-        reason: str
-        ):
+    async def warn(self, interaction: discord.Interaction, user: discord.User, reason: str):
         report['users'].append({
-        'username': user.name,
-        'user_id': user.id,
-        'reason': reason
+            'username': user.name,
+            'user_id': user.id,
+            'reason': reason
         })
-        with open('data/reports.json', 'w', encoding='utf-8') as f:
+        with open(report_file_path, 'w', encoding='utf-8') as f:
             json.dump(report, f, ensure_ascii=False, indent=4)
-        await ctx.respond(f"{user.mention} has been warned for {reason}.")
+        await interaction.response.send_message(f"{user.mention} has been warned for {reason}.")
         await user.send(f"You have been warned for {reason}.")
 
     @warn.error
-    async def warn_error(ctx, error):
+    async def warn_error(self, interaction: discord.Interaction, error):
         if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You cant do that!")
+            await interaction.response.send_message("You can't do that!")
 
-
-def setup(bot):
-    bot.add_cog(warn(bot))
+async def setup(bot):
+    await bot.add_cog(Warn(bot))

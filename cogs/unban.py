@@ -1,43 +1,47 @@
-import random
 import discord
-from imdb import Cinemagoer
-import time
-import os
-from dotenv import load_dotenv
 from discord.ext import commands
-from discord.commands import slash_command
-from discord.ext.commands import Bot
-from discord.ext.commands import  MissingPermissions,has_permissions
+from discord import app_commands
 import json
 
-with open('data/bans.json', encoding='utf-8') as f:
-  try:
-    bans = json.load(f)
-  except ValueError:
-    bans = {}
-    bans['users'] = []
-class unban(commands.Cog):
+class Unban(commands.Cog):
 
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
+        self.bans_file = 'data/bans.json'
+        self.bans = self.load_bans()
 
-    @slash_command(name='unban')
+    def load_bans(self):
+        try:
+            with open(self.bans_file, encoding='utf-8') as f:
+                return json.load(f)
+        except (FileNotFoundError, ValueError):
+            return {'users': []}
+
+    def save_bans(self):
+        with open(self.bans_file, 'w', encoding='utf-8') as f:
+            json.dump(self.bans, f, ensure_ascii=False, indent=4)
+
+    @app_commands.command(name='unban')
     @commands.has_permissions(administrator=True)
-    async def unban(
-        self,
-        ctx: discord.ApplicationContext,
-        user: discord.User, reason: str
-    ):
-        bans['users'] = [entry for entry in bans['users'] if entry['user_id'] != user.id]
-        with open('data/bans.json', 'w', encoding='utf-8') as f:
-            json.dump(bans, f, ensure_ascii=False, indent=4)
-        await ctx.guild.unban(user, reason=reason)
-        await ctx.respond(f"{user.mention} has been unbanned.")
+    async def unban(self, interaction: discord.Interaction, user: discord.User, reason: str):
+        self.bans['users'] = [entry for entry in self.bans['users'] if entry['user_id'] != user.id]
+        self.save_bans()
+        await interaction.guild.unban(user, reason=reason)
+        await interaction.response.send_message(f"{user.mention} has been unbanned.")
 
     @unban.error
-    async def unban_error(ctx, error):
+    async def unban_error(self, interaction: discord.Interaction, error):
         if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You cant do that!")
+            await interaction.response.send_message("You don't have permission to do that!")
 
-def setup(bot):
-    bot.add_cog(unban(bot))
+    @commands.command(name='unban')
+    @commands.has_permissions(administrator=True)
+    async def unban(self, ctx, user: discord.User, reason: str):
+        self.bans['users'] = [entry for entry in self.bans['users'] if entry['user_id'] != user.id]
+        self.save_bans()
+        await ctx.guild.unban(user, reason=reason)
+        await ctx.send(f"{user.mention} has been unbanned.")
+
+
+async def setup(bot):
+    await bot.add_cog(Unban(bot))

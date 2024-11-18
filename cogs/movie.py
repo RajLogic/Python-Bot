@@ -1,87 +1,71 @@
-import random
 import discord
 from imdb import Cinemagoer
-import time
-import os
-from dotenv import load_dotenv
 from discord.ext import commands
-from discord.commands import slash_command
-from discord.ext.commands import Bot
-from discord.ext.commands import  MissingPermissions,has_permissions
-import json
+from discord import app_commands
 
 im = Cinemagoer()
 
-class movie(commands.Cog):
+class Movie(commands.Cog):
 
-    def __init__(self,bot):
+    def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name= "movie")
-    async def movie(
-        self,
-        ctx: discord.ApplicationContext,
-        *, arg
-    ):
-        await ctx.defer()
+    async def create_movie_embed(self, title):
+        movie_id = title.getID()
+        movie_info = im.get_movie(movie_id)
+        cast = [d['name'] for d in movie_info['cast'][:5]]
+        genres = movie_info['genres']
+        countries = movie_info['countries']
+        directors = [d['name'] for d in movie_info['directors']]
+        languages = movie_info['languages']
+        rating = movie_info['rating']
+        plot = movie_info.get('plot outline', 'N/A')
+        title = movie_info['title']
+        year = movie_info['year']
+
+        embed = discord.Embed(
+            title=f"Movie Info - {title}",
+            description=f"This is the Information For The Movie {title}",
+            color=discord.Color.blue()
+        )
+        
+        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/724567148030197781/86955239ccb703bd3361cfd8c74d0345.webp")
+        embed.add_field(name='Title', value=f"{title} ({year})", inline=True)
+        embed.add_field(name="Ratings", value=f"{rating}/10")
+        embed.add_field(name="Genre", value=', '.join(genres))
+        embed.add_field(name="Country", value=', '.join(countries))
+        embed.add_field(name="Languages", value=', '.join(languages))
+        embed.add_field(name="Directors", value=', '.join(directors))
+        embed.add_field(name="Top 5 Actors", value=', '.join(cast))
+        embed.add_field(name="Plot", value=plot)
+        return embed
+
+    @commands.command(name="movie")
+    async def movie_command(self, ctx, *, arg: str):
         search = arg
         results = im.search_movie(search)
 
-        try:
-            global title,movies, ID
-            title = results[0]
-            movies = title.getID()
-            ID = im.get_movie(movies)
-            cast = [d['name'] for d in ID['cast']]
-            genres = [d for d in ID['genres']]
-            countries =[d for d in ID['countries']]
-            director = [d['name'] for d in ID['directors']]
-            languages =[d for d in ID['languages']] 
-            rating =ID['rating']
-            plot = ID['plot outline']
-            title = ID['title']
-            year = ID['year']
+        if results:
+            embed = await self.create_movie_embed(results[0])
+            embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar.url)
+            embed.set_footer(text="Created By SargentRaju")
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send('No movies found with that title')
 
-            topActors = 5
-        
+    @app_commands.command(name="movie")
+    async def movie_slash_command(self, interaction: discord.Interaction, arg: str):
+        await interaction.response.defer()
+        search = arg
+        results = im.search_movie(search)
 
+        if results:
+            embed = await self.create_movie_embed(results[0])
+            embed.set_author(name=interaction.user.name, icon_url=interaction.user.avatar.url)
+            embed.set_footer(text="Created By SargentRaju")
+            await interaction.followup.send(embed=embed)
+        else:
+            await interaction.followup.send('No movies found with that title')
 
-            print('\nMovie Information:\n')
-            print('Title: ',ID['title'])
-            print('Year: ',ID['year'])
-            print('Rating: ',ID['rating'],'/10')
-            print('Genre: '.join([i for i in ID['genres']]))
-            print('Country: ',', '.join([i for i in ID['countries']]))
-            print('Language: ',', '.join([i for i in ID['languages']]))
-            #print('Director(s): ',ID['directors'])
-            print('Top 5 Actors')
-            for i in range(5): 
-                print("    ", cast[i]) 
-        
-
-            embed = discord.Embed(
-            
-            title=f"Movie  Info - {title}",
-            description=f"This is the Information For The Movie {title}",
-            color=discord.Color.blue())
-            
-            embed.set_thumbnail(url = "https://cdn.discordapp.com/avatars/724567148030197781/86955239ccb703bd3361cfd8c74d0345.webp")
-            embed.add_field(name='Title',value=f"{title} ({year})",inline=True)
-            embed.add_field(name="Ratings", value=rating)
-            embed.add_field(name="Genre", value=genres)
-            embed.add_field(name="Country", value=countries)
-            embed.add_field(name="Languages", value=languages)
-            embed.add_field(name="Directors", value=director)
-            embed.add_field(name="Actors", value=f"{cast[1],cast[2],cast[3],cast[4],cast[5]}")
-            #for i in range(5):
-                # embed.add_field(name="Actors"[i], value=cast[i])
-            embed.add_field(name="Plot",value=plot)
-            embed.set_author(name=ctx.user.name,icon_url=ctx.user.avatar.url)
-            embed.set_footer(text= "Created By SargentRaju") #icon= "https://cdn.discordapp.com/avatars/354879221044084737/e5c6c1d9899ab42d26848de4dce4bb77.webp")
-
-
-            await ctx.send_followup(embed=embed)
-        except IndexError:
-            await ctx.send_followup('No movies found with that title')
-def setup(bot):
-    bot.add_cog(movie(bot))
+async def setup(bot):
+    await bot.add_cog(Movie(bot))

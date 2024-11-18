@@ -1,41 +1,30 @@
-import random
 import discord
-from imdb import Cinemagoer
-import time
-import os
-from dotenv import load_dotenv
 from discord.ext import commands
-from discord.commands import slash_command
-from discord.ext.commands import Bot
-from discord.ext.commands import  MissingPermissions,has_permissions
+from discord import app_commands
 import json
 
+# Load the report data from the JSON file
 with open('data/reports.json', encoding='utf-8') as f:
-  try:
-    report = json.load(f)
-  except ValueError:
-    report = {}
-    report['users'] = []
+    try:
+        report = json.load(f)
+    except ValueError:
+        report = {'users': []}
 
-class warnings(commands.Cog):
-
-    def __init__(self,bot):
+class Warnings(commands.Cog):
+    def __init__(self, bot):
         self.bot = bot
 
-    @slash_command(name="warnings")
+    @app_commands.command(name="warnings")
     @commands.has_permissions(administrator=True)
-    async def warnings(
-        self,
-        ctx,
-        user: discord.User
-    ):
+    async def warnings(self, interaction: discord.Interaction, user: discord.User):
         user_warnings = [entry for entry in report['users'] if entry['user_id'] == user.id]
         num_warnings = len(user_warnings)
-        await ctx.respond(f"{user.mention} has {num_warnings} warnings.")
+        await interaction.response.send_message(f"{user.mention} has {num_warnings} warnings.")
 
     @warnings.error
-    async def warnings_error(ctx, error):
+    async def warnings_error(self, interaction: discord.Interaction, error):
         if isinstance(error, commands.MissingPermissions):
-            await ctx.send("You cant do that!")
-def setup(bot):
-    bot.add_cog(warnings(bot))
+            await interaction.response.send_message("You can't do that!")
+
+async def setup(bot):
+    await bot.add_cog(Warnings(bot))

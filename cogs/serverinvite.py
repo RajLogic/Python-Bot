@@ -1,27 +1,35 @@
-import random
 import discord
-from imdb import Cinemagoer
-import time
-import os
-from dotenv import load_dotenv
 from discord.ext import commands
-from discord.commands import slash_command
-from discord.ext.commands import Bot
-from discord.ext.commands import  MissingPermissions,has_permissions
-import json
+from discord import app_commands
 
 class serverinvite(commands.Cog):
 
     def __init__(self,bot):
         self.bot = bot
 
-    @slash_command(pass_context=True,name='serverinvite')
+    @app_commands.command(name='serverinvite')
     async def serverinvite(
         self,
-        ctx: discord.ApplicationContext
+        interaction: discord.Interaction
     ):
-        invite = await ctx.channel.create_invite(max_uses=0,unique=False,temporary=False)
-        await ctx.author.send("Your invite URL is {}".format(invite.url))
-        await ctx.respond("Check Your Dm: ")
-def setup(bot):
-    bot.add_cog(serverinvite(bot))
+        invite = await interaction.channel.create_invite(max_uses=0, unique=False, temporary=False)
+        await interaction.user.send(f"Your invite URL is {invite.url}")
+        await interaction.response.send_message("Check your DM")
+
+    @serverinvite.error
+    async def serverinvite_error(self, interaction: discord.Interaction, error):
+        if isinstance(error, commands.CommandInvokeError):
+            await interaction.response.send_message("An error occurred while trying to send you the server invite link.")
+        else:
+            await interaction.response.send_message("An unexpected error occurred.")
+            raise error  # Re-raise the error for logging
+        
+    @commands.command(name='serverinvite')
+    async def serverinvite(self, ctx):
+        invite = await ctx.channel.create_invite(max_uses=0, unique=False, temporary=False)
+        await ctx.author.send(f"Your invite URL is {invite.url}")
+        await ctx.send("Check your DM")
+
+
+async def setup(bot):
+    await bot.add_cog(serverinvite(bot))
