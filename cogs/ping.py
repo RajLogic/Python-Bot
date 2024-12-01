@@ -26,7 +26,7 @@ class Ping(commands.Cog):
         await message.edit(content=f":ping_pong: Pong! Latency: `{latency:.2f}ms`")
 
     @app_commands.command()
-    async def ping_slash(self, interaction: discord.Interaction):
+    async def ping(self, interaction: discord.Interaction):
         """Respond with the bot's latency."""
         print("Slash command invoked.")
         

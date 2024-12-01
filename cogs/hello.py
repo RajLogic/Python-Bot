@@ -12,7 +12,7 @@ class Hello(commands.Cog):
         await ctx.send("Hello! 👋")
 
     @app_commands.command()
-    async def hello_slash(self, interaction: discord.Interaction):
+    async def hello(self, interaction: discord.Interaction):
         """A simple command to say hello."""
         await interaction.response.send_message("Hello! 👋")
 async def setup(bot):
