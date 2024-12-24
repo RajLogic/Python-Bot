@@ -75,6 +75,9 @@ extensions = [
     'cogs.unban',
     'cogs.warn',
     'cogs.warnings',
+    'cogs.userinfo',  
+    'cogs.weather',
+    'cogs.money'
 ]
 
 # Load extensions
