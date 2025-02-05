@@ -16,15 +16,22 @@ prefix = os.getenv('DISCORD_PREFIX')
 link = os.getenv('DISCORD_LINK')
 ownerid = int(os.getenv('DISCORD_OWNERID')) if os.getenv('DISCORD_OWNERID') else None
 
-# Debug prints to verify environment variables
-print(f"DISCORD_TOKEN: {token}")
-print(f"DISCORD_PREFIX: {prefix}")
-print(f"DISCORD_LINK: {link}")
-print(f"DISCORD_OWNERID: {ownerid}")
 
 # Check if the token is set
 if not token:
     raise ValueError("DISCORD_TOKEN is not set in the .env file")
+
+# Check if the prefix is set
+if not prefix:
+    raise ValueError("DISCORD_PREFIX is not set in the .env file")
+
+# Check if the owner ID is set
+if not ownerid:
+    raise ValueError("DISCORD_OWNERID is not set in the .env file")
+
+# Check if the link is set
+if not link:
+    raise ValueError("DISCORD_LINK is not set in the .env file")
 
 # Initialize the bot
 intents = discord.Intents.all()
