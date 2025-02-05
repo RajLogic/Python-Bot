@@ -4,6 +4,9 @@ from discord import app_commands
 import json
 import os
 
+
+
+
 class Money(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

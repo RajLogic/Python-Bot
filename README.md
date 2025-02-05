@@ -32,7 +32,12 @@ git clone https://github.com/RajLogic/Python-Bot.git
 ```bash
 pip install -r requirements.txt
 ```
-3. Configure the bot token: Replace `YOUR_BOT_TOKEN` in `.env` with your Discord bot token.
+3. Rename all Data Files by removing Example from Them.
+Example
+```bash
+bansExample.json   ---->  bans.json
+```
+4. Configure the bot token: Replace `YOUR_BOT_TOKEN` in `.env` with your Discord bot token.
 
 ## Usage
 
