@@ -3,3 +3,4 @@ discord.py
 py-cord
 python-dotenv
 requests
+audioop-lts
