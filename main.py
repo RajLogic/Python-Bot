@@ -84,7 +84,7 @@ extensions = [
     'cogs.warnings',
     'cogs.userinfo',  
     'cogs.weather',
-    'cogs.money'
+    'cogs.money',
 ]
 
 # Load extensions
